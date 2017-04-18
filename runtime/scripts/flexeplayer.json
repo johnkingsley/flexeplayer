@@ -1,0 +1,172 @@
+{
+	"log": {
+		"verbose": false
+	},
+
+	"touchscreen": {
+		"dev_name": "/dev/input/by-id/usb-Elo_TouchSystems__Inc._Elo_TouchSystems_2700_IntelliTouch_r__USB_Touchmonitor_Interfac_20L78493-event-mouse",
+		"min_x": 4095,
+		"max_x": 0,
+		"min_y": 4095,
+		"max_y": 0
+	},
+
+	"general": {
+		"enable_keyboard": true,
+		"enable_cursor": true,
+		"enable_touchscreen": true,
+		"video_dir": "/home/pi/Videos",
+		"omx_cmd": "unbuffer omxplayer --layer -10 --no-keys --no-osd --blank"
+	},
+
+	"win_home": {
+		"widgets": [
+			"image.logo",
+			"button.allez",
+			"button.go"
+		]
+	},
+
+	"win_chooser": {
+		"widgets": [
+			"videolist.videolist",
+			"button.back",
+			"button.left",
+			"text.pagenum",
+			"button.right",
+			"button.lang",
+			"timer.idle"
+		]
+	},
+
+	"win_player": {
+		"widgets": [
+			"button.back",
+			"button.lang",
+			"progbar.progbar"
+		],
+		"button_hide_timeout": 5
+	},
+
+	"colors": {
+		".default": {
+			"text": "0x000000",
+			"fg": "0xffffff",
+			"bg": "0x7f7f7f"
+		},
+		"videolist": {
+			"highlight": "0x000000"
+		},
+		"progbar": {
+			"fg": "0xffffff",
+			"bg": "0x3f3f3f"
+		},
+		"idle": {
+			"bg": "0xffffff"
+		}
+	},
+
+	"fonts": {
+		".default": {
+			"name": "fonts/FreeSansBold.ttf",
+			"size": 16
+		},
+		"videolist": {
+			"size": 18
+		},
+		"idle": {
+			"size": 50
+		},
+		"pagenum": {
+		},
+		"button": {
+		}
+	},
+
+	"widgets": {
+		"button": {
+			"y": "100%",
+			"height": "5%",
+			"width": "100",
+			"z": 0
+		},
+		"button.allez": {
+			"text": "Allez!",
+			"origin": "southeast",
+			"x": "40%"
+		},
+		"button.go": {
+			"text": "Go!",
+			"origin": "southwest",
+			"x": "60%"
+		},
+		"button.left": {
+			"text": "<",
+			"origin": "southeast",
+			"x": "45%"
+		},
+		"button.right": {
+			"text": ">",
+			"origin": "southwest",
+			"x": "55%"
+		},
+		"button.back": {
+			"text": "<<",
+			"origin": "southwest",
+			"x": "0"
+		},
+		"button.lang": {
+			"text": "",
+			"origin": "southeast",
+			"x": "100%"
+		},
+		"image.logo": {
+			"src": "images/logo.png",
+			"origin": "north",
+			"x": "50%",
+			"y": "5%",
+			"width": "90%",
+			"height": "90%",
+			"z": 0
+		},
+		"timer.idle": {
+			"timeout_start": 60,
+			"timeout_len": 10,
+			"diameter": "30%",
+			"origin": "centre",
+			"x": "50%",
+			"y": "50%",
+			"z": 1000
+		},
+		"videolist.videolist": {
+			"num_col": 3,
+			"num_row": 3,
+			"space_x": "2%",
+			"space_y": "2%",
+			"border_width": 2,
+			"border_space": 4,
+			"origin": "centre",
+			"x": "50%",
+			"y": "50%",
+			"width": "100%",
+			"height": "95%",
+			"z": 0
+		},
+		"text.pagenum": {
+			"origin": "center",
+			"x": "50%",
+			"y": "97.5%",
+			"width": "100%",
+			"height": "100%",
+			"z": 0
+		},
+		"progbar.progbar": {
+			"origin": "southwest",
+			"x": "0",
+			"y": "100%",
+			"width": "100%",
+			"height": "2",
+			"z": 10
+		}
+	}
+}
