@@ -1,2 +1,2 @@
-# flexeplayer
-Flexeplayer: Video kiosk for the Raspberry Pi
+# Flex.E.Player
+Flex.E.Player: Video Kiosk for the Raspberry Pi
