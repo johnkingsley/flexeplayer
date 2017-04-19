@@ -65,9 +65,9 @@ end
 ----------------------------------------------------
 ----------------------------------------------------
 ----------------------------------------------------
-function WinPlayer.activate_and_play(self, path)
+function WinPlayer.activate_and_play(self, path, srt_file)
     self:activate()
-    self.omx_video:load(path)
+    self.omx_video:load(path, srt_file)
 end
 
 ----------------------------------------------------

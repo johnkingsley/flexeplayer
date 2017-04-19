@@ -79,7 +79,7 @@ function WidgetVideoDesc._init(self, parent_name, video, idx, min_x, max_x, min_
     self.path = path
 
     local click_fnc = function()
-        gbl.win_player:activate_and_play(self.video.path)
+        self:go_play()
     end
 
     WidgetGroup._init(self, "videodesc", outline, click_fnc)
@@ -89,7 +89,7 @@ end
 ----------------------------------------------------
 ----------------------------------------------------
 function WidgetVideoDesc.go_play(self)
-    gbl.win_player:activate_and_play(self.video.path)
+    gbl.win_player:activate_and_play(self.video.path, self.video.srt_file)
 end
 
 ----------------------------------------------------

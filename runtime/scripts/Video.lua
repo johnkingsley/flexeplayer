@@ -42,6 +42,7 @@ function Video._init(self, json_file_path)
 
     local image = json_obj.image
     local video = json_obj.video
+    local srt_file = json_obj.srt_file
     local title = json_obj.title
     local desc = json_obj.desc
     local duration = json_obj.duration
@@ -52,6 +53,14 @@ function Video._init(self, json_file_path)
 
     if video == nil then
         video = basename..".mp4"
+    end
+
+    if srt_file == nil then
+        srt_file = basename..".srt"
+    end
+    srt_file = dirname..srt_file
+    if not Path.file_exists(srt_file) then
+        srt_file = nil
     end
 
     local screenshot_path = dirname..image
@@ -73,6 +82,7 @@ function Video._init(self, json_file_path)
 
     self.loaded_ok = true
     self.path = video_path
+    self.srt_file = srt_file
     self.title = title
     self.desc = desc
     self.duration = duration
