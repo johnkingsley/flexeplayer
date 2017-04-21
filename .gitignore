@@ -3,6 +3,6 @@ bin/flexeplayer_debug
 obj
 
 # Ignore vi temp files
-*.swp
-*.swo
-*~
+**/*~
+**/*.bak
+**/*.sw[abcdefghijklmnop]
