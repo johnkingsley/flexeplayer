@@ -80,7 +80,7 @@ function WidgetVideoList.load(self)
             self:widget_add(page_widget)
             table.insert(self.pages, page_widget)
         end
-        print(string.format("[%d] %s", idx, vid.title))
+        print(string.format("[%d] %s", idx, vid:get_title()))
         local min_x = self.real_x + self.space_x + (col-1) * col_width
         local max_x = min_x + col_width - self.space_x
         local min_y = self.real_y + self.space_y + (row-1) * row_height

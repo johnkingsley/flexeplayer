@@ -22,6 +22,11 @@ local OMXVideo = require("OMXVideo")
 
 WinPlayer = Class(Win)
 
+local STATE_IDLE = 0
+local STATE_PLAYING = 1
+local STATE_WAITING_FOR_RESTART = 2
+local STATE_WAITING_FOR_STOP = 3
+
 ----------------------------------------------------
 ----------------------------------------------------
 ----------------------------------------------------
@@ -31,6 +36,8 @@ function WinPlayer._init(self, wmanager)
 
     -- Set up the video player
     self.omx_video = OMXVideo()
+    self.curr_video = nil
+    self.state = STATE_IDLE
 
     -- Wire up the progress bar
     local progbar = self:widget_lookup("progbar.progbar")
@@ -52,6 +59,7 @@ end
 ----------------------------------------------------
 ----------------------------------------------------
 function WinPlayer.go_stop(self)
+    self.state = STATE_WAITING_FOR_STOP
     self.omx_video:stop()
 end
 
@@ -59,15 +67,19 @@ end
 ----------------------------------------------------
 ----------------------------------------------------
 function WinPlayer.lang_changed(self)
-    -- TODO: handle case when lang changes -- need to restart video
+    -- Restart the video in the new language
+    self.state = STATE_WAITING_FOR_RESTART
+    self.omx_video:stop()
 end
 
 ----------------------------------------------------
 ----------------------------------------------------
 ----------------------------------------------------
-function WinPlayer.activate_and_play(self, path, srt_file)
+function WinPlayer.activate_and_play(self, video)
+    self.state = STATE_PLAYING
+    self.curr_video = video
     self:activate()
-    self.omx_video:load(path, srt_file)
+    self.curr_video:play(self.omx_video)
 end
 
 ----------------------------------------------------
@@ -88,11 +100,31 @@ end
 function WinPlayer.update(self)
     Win.update(self)
 
-    if (self.omx_video:update()) then
-        gbl.win_chooser:activate()
-    else
-        if self.progbar then
-            self.progbar.percent_done = self.omx_video:percent_done()
+    local closed = self.omx_video:update()
+
+    if self.state == STATE_PLAYING then
+        if closed then
+            -- The video ended naturally
+            self.state = STATE_IDLE
+            gbl.win_chooser:activate()
+        else
+            if self.progbar then
+                self.progbar.percent_done = self.omx_video:percent_done()
+            end
+        end
+
+    elseif self.state == STATE_WAITING_FOR_STOP then
+        if closed then
+            -- The video was ended by the user
+            self.state = STATE_IDLE
+            gbl.win_chooser:activate()
+        end
+
+    elseif self.state == STATE_WAITING_FOR_RESTART then
+        if closed then
+            -- The language changed, we need to restart the video
+            self.state = STATE_PLAYING
+            self.curr_video:play(self.omx_video)
         end
     end
 end
@@ -101,6 +133,7 @@ end
 ----------------------------------------------------
 ----------------------------------------------------
 function WinPlayer.exit(self)
+    -- TODO: the program is exiting, should we wait for the OMXplayer to stop?
     self.omx_video:stop()
 end
 

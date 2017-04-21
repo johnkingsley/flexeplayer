@@ -40,54 +40,157 @@ function Video._init(self, json_file_path)
         return
     end
 
-    local image = json_obj.image
-    local video = json_obj.video
-    local srt_file = json_obj.srt_file
-    local title = json_obj.title
-    local desc = json_obj.desc
-    local duration = json_obj.duration
-
-    if image == nil then
-        image = basename..".jpg"
+    -------------------------------------------------------------------
+    -- Check if file exists, if yes return full path
+    -------------------------------------------------------------------
+    local check_file = function(path)
+        local file
+        if path ~= nil then
+            path = dirname .. path
+            if Path.file_exists(path) then
+                file = path
+            end
+        end
+        return file
     end
 
-    if video == nil then
-        video = basename..".mp4"
+    -------------------------------------------------------------------
+    -- Check if image exists, if yes load it and return the object
+    -- (parameter 'default' is returned if file is not found)
+    -------------------------------------------------------------------
+    local load_img = function(path, default)
+        local img = default
+        if path ~= nil then
+            path = dirname .. path
+            if Path.file_exists(path) then
+                img = of.Image()
+                img:load(path)
+            end
+        end
+        return img
     end
 
-    if srt_file == nil then
-        srt_file = basename..".srt"
-    end
-    srt_file = dirname..srt_file
-    if not Path.file_exists(srt_file) then
-        srt_file = nil
+    -------------------------------------------------------------------
+    -- Lookup a setting in the .json file.
+    -- If not set, then figure out a good default
+    -- Paramters:
+    --   'name' is the name of the setting
+    --   'lang' is the language code
+    --   'file_ending' is the file extension to use when picking a default
+    --   'default' is what is used if all else fails
+    -------------------------------------------------------------------
+    local lookup = function(name, lang, file_ending, default)
+        if lang ~= "" then
+            name = name .. ":" .. lang
+            if file_ending ~= nil then
+                file_ending = "." .. lang .. file_ending
+            end
+        end
+
+        local val = json_obj[name]
+        if val == nil then
+            if file_ending ~= nil then
+                local path = basename..file_ending
+                if check_file(path) ~= nil then
+                    val = path
+                end
+            end
+            if val == nil then
+                val = default
+            end
+        end
+        return val
     end
 
-    local screenshot_path = dirname..image
-    local screenshot = of.Image()
-    screenshot:load(screenshot_path)
+    -------------------------------------------------------------------
+    -- Load the settings for a particular language, as set in 'lang'.
+    -- If 'lang' is "" then this is the default for all languages.
+    -- Use the table 'default' for finding default values.
+    -------------------------------------------------------------------
+    local do_load = function(lang, default)
+        local image    = lookup("image",    lang, ".jpg", default.image)
+        local video    = lookup("video",    lang, ".mp4", default.video)
+        local srt_file = lookup("srt_file", lang, ".srt", default.srt_file)
+        local title    = lookup("title",    lang, nil,    default.title)
 
-    local desc_img_path = dirname..basename..".desc.png"
-    local desc_img
-    if (Path.file_exists(desc_img_path)) then
-        desc_img = of.Image()
-        desc_img:load(desc_img_path)
+        local image_obj
+        local image_fullpath = check_file(image)
+        if image_fullpath == nil then
+            image = nil
+        else
+            if lang ~= "" then
+                image_obj = load_img(image)
+                if image_obj == nil then
+                    image = nil
+                    image_fullpath = nil
+                end
+            end
+        end
+        local video_fullpath = check_file(video)
+        local srt_file_fullpath = check_file(srt_file)
+
+        if title == nil then
+            title = video_name
+        end
+
+        return {
+            image = image,
+            image_fullpath = image_fullpath,
+            image_obj = image_obj,
+
+            video = video,
+            video_fullpath = video_fullpath,
+
+            srt_file = srt_file,
+            srt_file_fullpath = srt_file_fullpath,
+
+            title = title
+        }
     end
 
-    local video_path = dirname..video
-    if (not Path.file_exists(video_path)) then
-        print("Video not found: '"..video_path.."'")
-        return
+    -- First, load the default settings for all lanuages.
+    local default_info = do_load("", {})
+
+    -- Then load the settings for each language.
+    local info_by_lang = {}
+    local langs = gbl.lang.langs()
+    for lang,lang_desc in pairs(langs) do
+        info_by_lang[lang] = do_load(lang, default_info)
     end
 
     self.loaded_ok = true
-    self.path = video_path
-    self.srt_file = srt_file
-    self.title = title
-    self.desc = desc
-    self.duration = duration
-    self.screenshot = screenshot
-    self.desc_img = desc_img
+    self.info_by_lang = info_by_lang
+end
+
+--------------------------------------------
+--------------------------------------------
+--------------------------------------------
+function Video.get_title(self, lang)
+    if lang == nil then
+        lang = gbl.lang.code
+    end
+    return self.info_by_lang[lang].title
+end
+
+--------------------------------------------
+--------------------------------------------
+--------------------------------------------
+function Video.get_image(self, lang)
+    if lang == nil then
+        lang = gbl.lang.code
+    end
+    return self.info_by_lang[lang].image_obj
+end
+
+--------------------------------------------
+--------------------------------------------
+--------------------------------------------
+function Video.play(self, omx_video, lang)
+    if lang == nil then
+        lang = gbl.lang.code
+    end
+    local info = self.info_by_lang[lang]
+    omx_video:load(info.video_fullpath, info.srt_file_fullpath)
 end
 
 return Video

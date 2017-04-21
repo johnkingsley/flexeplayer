@@ -53,8 +53,14 @@ function WidgetVideoDesc._init(self, parent_name, video, idx, min_x, max_x, min_
     local sw = w
     local sh = h - th
 
-    local screenshot = self.video.screenshot
-    Win.img_resize(screenshot, sw, sh)
+    -- Resize the screenshots in all languages
+    local screenshot
+    local langs = gbl.lang.langs()
+    for lang,lang_desc in pairs(langs) do
+        screenshot = self.video:get_image(lang)
+        Win.img_resize(screenshot, sw, sh)
+    end
+
     local iw = screenshot:getWidth()
     local ih = screenshot:getHeight()
     self.sx = self.min_x + border_space
@@ -89,7 +95,7 @@ end
 ----------------------------------------------------
 ----------------------------------------------------
 function WidgetVideoDesc.go_play(self)
-    gbl.win_player:activate_and_play(self.video.path, self.video.srt_file)
+    gbl.win_player:activate_and_play(self.video)
 end
 
 ----------------------------------------------------
@@ -98,11 +104,11 @@ end
 function WidgetVideoDesc.do_draw(self)
     -- Draw the screenshot
     of.setColor(255)
-    self.video.screenshot:draw(self.sx, self.sy)
+    self.video:get_image():draw(self.sx, self.sy)
 
     -- Draw the title
     of.setHexColor(COLOR_TEXT)
-    self.font_video_title:drawString(self.video.title, self.tx, self.ty)
+    self.font_video_title:drawString(self.video:get_title(), self.tx, self.ty)
 
     -- Highlight if inside the box
     if self:cursor_is_inside() then
