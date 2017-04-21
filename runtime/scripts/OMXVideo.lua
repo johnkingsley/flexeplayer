@@ -311,29 +311,28 @@ function OMXVideo.update(self)
 
     local fds = self.fds
     local events = posix.poll(fds,0)
-    if events <= 0 then
-        -- TODO: < 0
-        return
-    end
-
-    for fd in pairs(fds) do
-        if  fds[fd].revents.IN then
-            local data = posix.read(fd,1024)
-            data = data:gsub("\r", "\n")
-            posix.write(2,data);
-            if (fd == self.pipe_stdout) then
-                self.video_started = true
+    if events < 0 then
+        -- TODO - log error
+    elseif events > 0 then
+        for fd in pairs(fds) do
+            if  fds[fd].revents.IN then
+                local data = posix.read(fd,1024)
+                data = data:gsub("\r", "\n")
+                posix.write(2,data);
+                if (fd == self.pipe_stdout) then
+                    self.video_started = true
+                end
             end
-        end
-        if fds[fd].revents.HUP then
-            closed = true
-            posix.close(fd)
-            posix.wait(self.pipe_pid, WNOHANG)
-            self.pipe_pid = nil
-            self.video_started = false
-            fds[fd] = nil
-            if not next(fds) then
-                break
+            if fds[fd].revents.HUP then
+                closed = true
+                posix.close(fd)
+                posix.wait(self.pipe_pid, WNOHANG)
+                self.pipe_pid = nil
+                self.video_started = false
+                fds[fd] = nil
+                if not next(fds) then
+                    break
+                end
             end
         end
     end
