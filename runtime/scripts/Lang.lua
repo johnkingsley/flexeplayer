@@ -33,29 +33,36 @@ local LANGS_OPPOSITE = {
 ----------------------------------------------------
 ----------------------------------------------------
 function Lang._init(self)
-    self.lang = "en"
+    self.code = "en"
 end
 
 ----------------------------------------------------
 ----------------------------------------------------
 ----------------------------------------------------
-function Lang.set(self, lang)
-    --print("setting lang to "..lang)
-    self.lang = lang
+function Lang.langs(self)
+    return LANGS
 end
 
 ----------------------------------------------------
 ----------------------------------------------------
 ----------------------------------------------------
-function Lang.opposite(lang)
-    return LANGS_OPPOSITE[lang]
+function Lang.set(self, code)
+    --print("setting lang to "..code)
+    self.code = code
+end
+
+----------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+function Lang.opposite(code)
+    return LANGS_OPPOSITE[code]
 end
 
 ----------------------------------------------------
 ----------------------------------------------------
 ----------------------------------------------------
 function Lang.get_desc(self, opposite)
-    local l = self.lang
+    local l = self.code
     if opposite then
         l = Lang.opposite(l)
     end
@@ -66,7 +73,7 @@ end
 ----------------------------------------------------
 ----------------------------------------------------
 function Lang.toggle(self)
-    self:set(Lang.opposite(self.lang))
+    self:set(Lang.opposite(self.code))
 end
 
 return Lang
