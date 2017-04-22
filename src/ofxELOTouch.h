@@ -116,8 +116,8 @@ class ofxELOTouch : public ofThread {
 	}
 
 	void threadedFunction(){
-		bool got_movement;
-		bool got_press;
+		bool got_movement = false;
+		bool got_press = false;
 		ofVec3f pos;
 		bool pressed = false;
 
