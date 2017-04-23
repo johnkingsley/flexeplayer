@@ -16,7 +16,7 @@
 		"enable_cursor": true,
 		"enable_touchscreen": true,
 		"video_dir": "/home/pi/Videos",
-		"omx_cmd": "unbuffer omxplayer --layer -10 --no-keys --no-osd --blank"
+		"omx_cmd": "stdbuf --output=0 omxplayer --layer -10 --no-keys --no-osd --blank"
 	},
 
 	"win_home": {

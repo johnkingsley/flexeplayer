@@ -24,8 +24,8 @@ local Path = require("Path")
 local OMXVideo = Class()
 
 -- TODO
---local OMX_CMD = gbl.cfg:get_string("general/omx_cmd", "unbuffer omxplayer --adev alsa --layer -10 --no-keys --no-osd --blank")
-local OMX_CMD = gbl.cfg:get_string("general/omx_cmd", "unbuffer omxplayer --layer -10 --no-keys --no-osd --blank")
+--local OMX_CMD = gbl.cfg:get_string("general/omx_cmd", "stdbuf --output=0 omxplayer --adev alsa --layer -10 --no-keys --no-osd --blank")
+local OMX_CMD = gbl.cfg:get_string("general/omx_cmd", "stdbuf --output=0 omxplayer --layer -10 --no-keys --no-osd --blank")
 
 --------------------------------------------
 --------------------------------------------
