@@ -18,4 +18,4 @@
 #
 
 clear
-./flexeplayer_debug >flexeplayer.out 2>&1
+./flexeplayer >flexeplayer.out 2>&1
