@@ -18,4 +18,5 @@
 #
 
 clear
+cd $(dirname $(readlink -f $0))
 ./flexeplayer >flexeplayer.out 2>&1
