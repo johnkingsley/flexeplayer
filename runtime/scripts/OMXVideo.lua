@@ -44,11 +44,12 @@ end
 --------------------------------------------
 --------------------------------------------
 --------------------------------------------
-function OMXVideo.load(self, path, srt_file)
+function OMXVideo.load(self, path, srt_file, vol)
     self.path = path
 
     print("Loading video '"..path.."'")
     print("SRT file: '"..tostring(srt_file).."'")
+    print("vol: '"..tostring(vol).."'")
     self.video_duration = nil
 
     local cmd_table = {}
@@ -59,6 +60,10 @@ function OMXVideo.load(self, path, srt_file)
     if srt_file ~= nil then
         table.insert(cmd_table, "--subtitles")
         table.insert(cmd_table, srt_file)
+    end
+    if vol ~= nil then
+        table.insert(cmd_table, "--vol")
+        table.insert(cmd_table, vol)
     end
     table.insert(cmd_table, path)
 

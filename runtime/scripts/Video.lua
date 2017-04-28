@@ -112,6 +112,7 @@ function Video._init(self, json_file_path)
         local video    = lookup("video",    lang, ".mp4", default.video)
         local srt_file = lookup("srt_file", lang, ".srt", default.srt_file)
         local title    = lookup("title",    lang, nil,    default.title)
+        local vol      = lookup("vol",      lang, nil,    default.vol)
 
         local image_obj
         local image_fullpath = check_file(image)
@@ -144,7 +145,8 @@ function Video._init(self, json_file_path)
             srt_file = srt_file,
             srt_file_fullpath = srt_file_fullpath,
 
-            title = title
+            title = title,
+            vol = vol
         }
     end
 
@@ -190,7 +192,7 @@ function Video.play(self, omx_video, lang)
         lang = gbl.lang.code
     end
     local info = self.info_by_lang[lang]
-    omx_video:load(info.video_fullpath, info.srt_file_fullpath)
+    omx_video:load(info.video_fullpath, info.srt_file_fullpath, info.vol)
 end
 
 return Video
