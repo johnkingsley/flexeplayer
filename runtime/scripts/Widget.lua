@@ -116,8 +116,8 @@ end
 ----------------------------------------------------
 function Widget.get_real_xy(self)
     local o = self.origin
-    local ox = bit32.band(o, 0x0f)
-    local oy = bit32.arshift(bit32.band(o, 0xf0), 4)
+    local ox = o % 16
+    local oy = math.floor(o / 16)
     local calc = function(t, val, len)
         if t == _MIN then
             --print("MIN")

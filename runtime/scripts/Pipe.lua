@@ -32,7 +32,7 @@ function Pipe.open3(path, ...)
         posix.close(w2)
         posix.close(w3)
 
-        local ret, err = posix.execp(path, table.unpack({...}))
+        local ret, err = posix.execp(path, unpack({...}))
         assert(ret ~= nil, "execp() failed")
 
         posix._exit(1)
@@ -55,7 +55,7 @@ function Pipe.simple(input, cmd, ...)
     --
     -- Launch child process
     --
-    local pid, w, r, e = Pipe.open3(cmd, table.unpack({...}))
+    local pid, w, r, e = Pipe.open3(cmd, unpack({...}))
     assert(pid ~= nil, "filter() unable to popen3()")
 
     --

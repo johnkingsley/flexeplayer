@@ -67,7 +67,7 @@ function OMXVideo.load(self, path, srt_file, vol)
     end
     table.insert(cmd_table, path)
 
-    self.pipe_pid, self.pipe_stdin, self.pipe_stdout, self.pipe_stderr = Pipe.open3(table.unpack(cmd_table))
+    self.pipe_pid, self.pipe_stdin, self.pipe_stdout, self.pipe_stderr = Pipe.open3(unpack(cmd_table))
     self.fds = {
         [self.pipe_stdout] = { events = { IN = true } },
         [self.pipe_stderr] = { events = { IN = true } },
@@ -127,7 +127,7 @@ function OMXVideo.dbus_cmd(self, ...)
         "/org/mpris/MediaPlayer2",
         ...
     }
-    local status, stdout, stderr = Pipe.simple("", table.unpack(cmd))
+    local status, stdout, stderr = Pipe.simple("", unpack(cmd))
     -- TODO: check for errors
     return stdout
 end
