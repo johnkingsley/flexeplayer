@@ -24,12 +24,20 @@ WidgetVideoDesc = Class(WidgetGroup)
 
 local COLOR_TEXT = gbl.cfg:get_int("colors/text", 0x000000)
 
+local PLAY_LOGO_SRC = "images/play.png"
+local play_logo
+
 ----------------------------------------------------
 ----------------------------------------------------
 ----------------------------------------------------
 function WidgetVideoDesc._init(self, parent_name, video, idx, min_x, max_x, min_y, max_y)
     self.video = video
     self.idx = idx
+
+    if play_logo == nil then
+        play_logo = of.Image()
+        play_logo:load(PLAY_LOGO_SRC)
+    end
 
     local this_section = "widgets/"..parent_name.."/"
     -- line width (in pixels) to draw around video desc
@@ -49,7 +57,7 @@ function WidgetVideoDesc._init(self, parent_name, video, idx, min_x, max_x, min_
 
     local w = self.max_x - self.min_x - 2*border_space
     local h = self.max_y - self.min_y - 2*border_space
-    local th = h * 0.10
+    local th = h * 0.15
     local sw = w
     local sh = h - th
 
@@ -66,7 +74,10 @@ function WidgetVideoDesc._init(self, parent_name, video, idx, min_x, max_x, min_
     self.sx = self.min_x + border_space
     self.sy = self.max_y - border_space - th - ih
 
-    self.tx = self.min_x + border_space
+    self.play_logo_x = self.min_x + border_space
+    self.play_logo_y = self.max_y - border_space*2 - play_logo:getHeight()
+
+    self.tx = self.play_logo_x + play_logo:getWidth()
     self.ty = self.max_y - border_space*2
 
     local path = of.Path()
@@ -109,6 +120,10 @@ function WidgetVideoDesc.do_draw(self)
     -- Draw the title
     of.setHexColor(COLOR_TEXT)
     self.font_video_title:drawString(self.video:get_title(), self.tx, self.ty)
+
+    -- Draw the play logo
+    of.setColor(255)
+    play_logo:draw(self.play_logo_x, self.play_logo_y)
 
     -- Highlight if inside the box
     if self:cursor_is_inside() then
