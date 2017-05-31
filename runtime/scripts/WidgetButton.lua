@@ -92,7 +92,13 @@ function WidgetButton.do_draw(self)
         self.image:draw(self.image_x, self.image_y)
     else
         of.setHexColor(0x000000)
-        local rect = font_button:getStringBoundingBox(self.text, 0, 0);
+
+        -- HACK - work around bug in getStringBoundingBox
+        local str = self.text
+        str = str:gsub("ç", "c")
+        str = str:gsub("Ç", "C")
+
+        local rect = font_button:getStringBoundingBox(str, 0, 0);
         local tx = self.cx - rect.width/2
         local ty = self.cy + rect.height/2
         font_button:drawString(self.text, tx, ty)
