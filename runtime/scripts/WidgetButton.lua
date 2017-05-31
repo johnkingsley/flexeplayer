@@ -33,26 +33,45 @@ function WidgetButton._init(self, name, click_fnc)
 
     local this_section = "widgets/"..name.."/"
     local text = gbl.cfg:get_string(this_section.."text")
+    local icon = gbl.cfg:get_string(this_section.."icon")
 
     local width = self.width
     local height = self.height
 
-    local real_x, real_y = self:get_real_xy()
-    self.cx = real_x + width/2
-    self.cy = real_y + height/2
+    local radius = 10
+    local shadow = 2
 
-    local path = of.Path()
-    path:moveTo(real_x,       real_y)
-    path:lineTo(real_x+width, real_y)
-    path:lineTo(real_x+width, real_y+height)
-    path:lineTo(real_x,       real_y+height)
-    path:close()
-    path:setFillHexColor(0x8f7f8f)
-    path:setStrokeHexColor(0x000000)
+    local real_x, real_y = self:get_real_xy()
+    self.cx = real_x + (width-shadow)/2
+    self.cy = real_y + (height-shadow)/2
+
+    local image
+    local image_x
+    local image_y
+    if icon ~= nil then
+        -- Load the image
+        image = of.Image()
+        image:load(icon)
+        Win.img_resize(image, width, height)
+        image_x = self.cx - image:getWidth()/2
+        image_y = self.cy - image:getHeight()/2
+    end
+
+    local path_fg = of.Path()
+    path_fg:rectRounded(real_x, real_y, 0, width-shadow, height-shadow, radius, radius, radius, radius)
+    path_fg:setFillHexColor(0x8f7f8f)
+
+    local path_bg = of.Path()
+    path_bg:rectRounded(real_x+shadow, real_y+shadow, 0, width-shadow, height-shadow, radius, radius, radius, radius)
+    path_bg:setFillHexColor(0x505050)
 
     self.text = text
-    self.path = path
-    local outline = path:getOutline():front()
+    self.image = image
+    self.image_x = image_x
+    self.image_y = image_y
+    self.path_fg = path_fg
+    self.path_bg = path_bg
+    local outline = path_fg:getOutline():front()
     self.outline = outline
 end
 
@@ -60,18 +79,24 @@ end
 ----------------------------------------------------
 ----------------------------------------------------
 function WidgetButton.do_draw(self)
+    self.path_bg:draw(0,0)
     if self:cursor_is_inside() then
-        self.path:setFillHexColor(0x9f9f9f)
+        self.path_fg:setFillHexColor(0x9f9f9f)
     else
-        self.path:setFillHexColor(0x8f8f8f)
+        self.path_fg:setFillHexColor(0x8f8f8f)
     end
-    self.path:draw(0,0)
+    self.path_fg:draw(0,0)
 
-    of.setHexColor(0x000000)
-    local rect = font_button:getStringBoundingBox(self.text, 0, 0);
-    local tx = self.cx - rect.width/2
-    local ty = self.cy + rect.height/2
-    font_button:drawString(self.text, tx, ty)
+    if self.image then
+        of.setColor(255)
+        self.image:draw(self.image_x, self.image_y)
+    else
+        of.setHexColor(0x000000)
+        local rect = font_button:getStringBoundingBox(self.text, 0, 0);
+        local tx = self.cx - rect.width/2
+        local ty = self.cy + rect.height/2
+        font_button:drawString(self.text, tx, ty)
+    end
 end
 
 return WidgetButton
