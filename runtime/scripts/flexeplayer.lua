@@ -16,6 +16,9 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+-- print LUA version
+print("Lua version is: ".._VERSION)
+
 -- gbl.cfg_file_name is set in ofApp.cpp
 gbl.cfg = nil
 gbl.wmanager = nil
