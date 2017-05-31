@@ -21,8 +21,8 @@ local Class = require("Class")
 Lang = Class()
 
 local LANGS = {
-    en = "English",
-    fr = "Français",
+    en = "ENGLISH",
+    fr = "FRANÇAIS",
 }
 local LANGS_OPPOSITE = {
     en = "fr",
