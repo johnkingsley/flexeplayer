@@ -21,6 +21,7 @@
 #include "ofMain.h"
 #include "ofxLua.h"
 #include "ofxELOTouch.h"
+#include "ofxJoystick.h"
 
 class ofApp : public ofBaseApp, ofxLuaListener {
 public:
@@ -45,4 +46,5 @@ public:
     std::string _cfg_file_name;
     ofxLua _lua;
     ofxELOTouch _touch;
+    ofxJoystick _joystick;
 };

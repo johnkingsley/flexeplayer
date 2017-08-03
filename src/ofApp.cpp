@@ -49,14 +49,28 @@ void ofApp::setup() {
     // Setup the touchscreen object, using the "touch" table
     // set in lua to configure it.
     _lua.pushTable("touch");
-    bool enabled = _lua.getBool("enabled", true);
-    std::string dev_name = _lua.getString("dev_name");
+    bool touch_enabled = _lua.getBool("enabled", true);
+    std::string touch_dev_name = _lua.getString("dev_name");
     int min_x = (int)_lua.getNumber("min_x");
     int max_x = (int)_lua.getNumber("max_x");
     int min_y = (int)_lua.getNumber("min_y");
     int max_y = (int)_lua.getNumber("max_y");
-    if (enabled) {
-    	_touch.init(dev_name.c_str(), min_x, max_x, min_y, max_y);
+    if (touch_enabled) {
+    	_touch.init(touch_dev_name.c_str(), min_x, max_x, min_y, max_y);
+    }
+    _lua.popTable();
+
+    // Setup the joystick object, using the "joystick" table
+    // set in lua to configure it.
+     _lua.pushTable("joystick");
+    bool js_enabled = _lua.getBool("enabled", true);
+    std::string js_dev_name = _lua.getString("dev_name");
+    std::string first_char = _lua.getString("first_char");
+    if (first_char.length() == 0) {
+        first_char = "0";
+    }
+    if (js_enabled) {
+    	_joystick.init(js_dev_name.c_str(), first_char.at(0));
     }
     _lua.popTable();
 }
@@ -67,6 +81,7 @@ void ofApp::setup() {
 /////////////////////////////////////////////////
 void ofApp::update() {
     _touch.flushEvents();
+    _joystick.flushEvents();
     _lua.scriptUpdate();
 }
 
@@ -83,6 +98,7 @@ void ofApp::draw() {
 /////////////////////////////////////////////////
 void ofApp::exit() {
     _touch.exit();
+    _joystick.exit();
     _lua.scriptExit();
     _lua.clear();
 }
